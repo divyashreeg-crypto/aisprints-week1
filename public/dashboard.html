@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizMaker - Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header>
+            <h1>QuizMaker Dashboard</h1>
+            <button id="logoutButton" class="logout-button">Logout</button>
+        </header>
+        
+        <main>
+            <div class="welcome-box">
+                <h2>Welcome back!</h2>
+                <p id="userEmail">Loading...</p>
+                <p class="info-text">You have successfully logged in to QuizMaker.</p>
+            </div>
+            
+            <div class="features-box">
+                <h3>What's Next?</h3>
+                <ul>
+                    <li>Create quizzes</li>
+                    <li>View student results</li>
+                </ul>
+                <div class="action-buttons">
+                    <a href="quiz.html" class="create-quiz-button">Create Quiz</a>
+                <!-- <a href="student-results.html" class="view-results-button">View Student Results</a> -->
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="dashboard.js"></script>
+</body>
+</html>

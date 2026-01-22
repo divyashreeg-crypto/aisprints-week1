@@ -13,10 +13,17 @@
 		"cf-typegen": "wrangler types --env-interface CloudflareEnv ./cloudflare-env.d.ts"
 	},
 	"dependencies": {
+		"@angular/common": "^21.1.1",
+		"@angular/core": "^21.1.1",
+		"@angular/platform-browser": "^21.1.1",
+		"@angular/platform-browser-dynamic": "^21.1.1",
+		"@angular/router": "^21.1.1",
 		"@opennextjs/cloudflare": "^1.11.0",
 		"next": "15.5.6",
 		"react": "19.1.0",
-		"react-dom": "19.1.0"
+		"react-dom": "19.1.0",
+		"rxjs": "^7.8.2",
+		"zone.js": "^0.16.0"
 	},
 	"devDependencies": {
 		"@eslint/eslintrc": "^3",

@@ -1,0 +1,150 @@
+<div class="student-results-container">
+  <!-- Header -->
+  <div class="header">
+    <h1>Student Results</h1>
+    <a routerLink="/dashboard" class="back-link">← Back to Dashboard</a>
+  </div>
+
+  <!-- Search and Filter -->
+  <div class="search-section">
+    <div class="search-box">
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        placeholder="Search by student name or quiz name..."
+        class="search-input"
+        (input)="loadResults()">
+      <select [(ngModel)]="filterBy" class="filter-select">
+        <option value="all">All</option>
+        <option value="student">Student Name</option>
+        <option value="quiz">Quiz Name</option>
+      </select>
+      <button *ngIf="searchTerm" (click)="clearSearch()" class="clear-button">Clear</button>
+    </div>
+    <div class="results-count">
+      Total Results: {{ results.length }}
+    </div>
+  </div>
+
+  <!-- Results Table -->
+  <div class="results-table-container" *ngIf="getFilteredResults().length > 0; else noResults">
+    <table class="results-table">
+      <thead>
+        <tr>
+          <th>Student Name</th>
+          <th>Quiz Name</th>
+          <th>Score</th>
+          <th>Percentage</th>
+          <th>Date Attempted</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let result of getFilteredResults()" class="result-row">
+          <td class="student-name">{{ result.studentName }}</td>
+          <td class="quiz-name">{{ result.quizName }}</td>
+          <td class="score">
+            <span class="score-value">{{ result.score }}/{{ result.totalQuestions }}</span>
+          </td>
+          <td class="percentage">
+            <span class="percentage-badge" [class.excellent]="result.percentage >= 90"
+                  [class.good]="result.percentage >= 70 && result.percentage < 90"
+                  [class.average]="result.percentage >= 50 && result.percentage < 70"
+                  [class.poor]="result.percentage < 50">
+              {{ result.percentage }}%
+            </span>
+          </td>
+          <td class="date">{{ formatDate(result.dateAttempted) }}</td>
+          <td class="actions">
+            <button class="view-button" (click)="viewDetails(result)">View Details</button>
+            <button class="delete-button" (click)="deleteResult(result.id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- No Results Message -->
+  <ng-template #noResults>
+    <div class="no-results">
+      <p>No results found.</p>
+      <p *ngIf="searchTerm" class="search-hint">Try adjusting your search criteria.</p>
+    </div>
+  </ng-template>
+
+  <!-- Details Modal -->
+  <div class="modal-overlay" *ngIf="showDetails && selectedResult" (click)="closeDetails()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Quiz Results Details</h2>
+        <button class="close-button" (click)="closeDetails()">×</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Student Info -->
+        <div class="student-info">
+          <div class="info-item">
+            <span class="info-label">Student:</span>
+            <span class="info-value">{{ selectedResult.studentName }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Quiz:</span>
+            <span class="info-value">{{ selectedResult.quizName }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Score:</span>
+            <span class="info-value score-highlight">
+              {{ selectedResult.score }}/{{ selectedResult.totalQuestions }} ({{ selectedResult.percentage }}%)
+            </span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Date:</span>
+            <span class="info-value">{{ formatDate(selectedResult.dateAttempted) }}</span>
+          </div>
+        </div>
+
+        <!-- Question-wise Breakdown -->
+        <div class="questions-breakdown">
+          <h3>Question-wise Results</h3>
+          <div
+            *ngFor="let answer of selectedResult.answers; let i = index"
+            class="question-result-item"
+            [class.correct]="answer.isCorrect"
+            [class.incorrect]="!answer.isCorrect">
+            
+            <div class="question-header">
+              <span class="question-number">Question {{ i + 1 }}</span>
+              <span class="status-badge" [class.correct-badge]="answer.isCorrect"
+                    [class.incorrect-badge]="!answer.isCorrect">
+                {{ answer.isCorrect ? '✓ Correct' : '✗ Incorrect' }}
+              </span>
+            </div>
+
+            <p class="question-text">{{ answer.questionText }}</p>
+
+            <div class="answer-details">
+              <div class="answer-row">
+                <span class="answer-label">Your Answer:</span>
+                <span class="answer-value" [class.correct-answer]="answer.isCorrect"
+                      [class.incorrect-answer]="!answer.isCorrect">
+                  {{ getOptionLetter(answer.userAnswer) }}. {{ answer.userAnswerText }}
+                </span>
+              </div>
+              
+              <div class="answer-row" *ngIf="!answer.isCorrect">
+                <span class="answer-label">Correct Answer:</span>
+                <span class="answer-value correct-answer">
+                  {{ getOptionLetter(answer.correctAnswer) }}. {{ answer.correctAnswerText }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="close-modal-button" (click)="closeDetails()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

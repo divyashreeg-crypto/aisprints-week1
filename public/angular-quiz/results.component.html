@@ -1,0 +1,77 @@
+<div class="results-box">
+  <h1>Quiz Complete!</h1>
+  
+  <!-- Score Display -->
+  <div class="score-display">
+    <div class="score-circle">
+      <span class="final-score">{{ getScore() }}</span>
+      <span class="score-divider">/</span>
+      <span class="total-score">{{ getTotalQuestions() }}</span>
+    </div>
+    <p class="score-percentage">{{ getPercentage() }}%</p>
+  </div>
+  
+  <p class="score-message">{{ getScoreMessage() }}</p>
+  
+  <!-- Detailed Results Section -->
+  <div class="detailed-results">
+    <h2 class="results-heading">Detailed Results</h2>
+    
+    <!-- Summary Statistics -->
+    <div class="summary-stats">
+      <div class="stat-item">
+        <span class="stat-label">Total Questions:</span>
+        <span class="stat-value">{{ getTotalQuestions() }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Correct Answers:</span>
+        <span class="stat-value correct-stat">{{ getScore() }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Incorrect Answers:</span>
+        <span class="stat-value incorrect-stat">{{ getIncorrectCount() }}</span>
+      </div>
+    </div>
+    
+    <!-- Questions Breakdown -->
+    <div class="questions-breakdown">
+      <div
+        *ngFor="let result of getQuizResults(); let i = index"
+        class="question-result"
+        [class.correct]="result.isCorrect"
+        [class.incorrect]="!result.isCorrect">
+        
+        <div class="question-result-header">
+          <span class="question-number">Question {{ i + 1 }}</span>
+          <span class="status-icon" [class.status-correct]="result.isCorrect" [class.status-incorrect]="!result.isCorrect">
+            {{ result.isCorrect ? '✓' : '✗' }}
+          </span>
+        </div>
+        
+        <div class="question-result-content">
+          <p class="result-question-text">{{ getQuestion(i).question }}</p>
+          
+          <div class="answer-comparison">
+            <div class="answer-item">
+              <span class="answer-label">Your Answer:</span>
+              <span class="answer-text" [class.correct-answer]="result.isCorrect" [class.incorrect-answer]="!result.isCorrect">
+                {{ getUserAnswerText(i) }}
+              </span>
+            </div>
+            
+            <div *ngIf="!result.isCorrect" class="answer-item">
+              <span class="answer-label">Correct Answer:</span>
+              <span class="answer-text correct-answer">{{ getCorrectAnswerText(i) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Action Buttons -->
+  <div class="results-actions">
+    <button class="restart-button" (click)="onRestart()">Take Quiz Again</button>
+    <a routerLink="/dashboard" class="dashboard-link">Back to Dashboard</a>
+  </div>
+</div>

@@ -1,0 +1,111 @@
+<div class="manage-questions-container">
+  <div class="header">
+    <h1>Manage Questions</h1>
+    <button class="add-button" (click)="showAddForm()" *ngIf="!showForm">
+      + Add Question
+    </button>
+  </div>
+
+  <!-- Question Form (Add/Edit) -->
+  <div class="question-form-container" *ngIf="showForm">
+    <div class="form-box">
+      <h2>{{ isEditing ? 'Edit Question' : 'Add New Question' }}</h2>
+      
+      <form [formGroup]="questionForm" (ngSubmit)="onSubmit()">
+        <!-- Question Text -->
+        <div class="form-group">
+          <label for="question">Question Text *</label>
+          <textarea
+            id="question"
+            formControlName="question"
+            class="form-control"
+            [class.invalid]="isFieldInvalid('question')"
+            rows="3"
+            placeholder="Enter the question text...">
+          </textarea>
+          <span class="error-message" *ngIf="isFieldInvalid('question')">
+            {{ getErrorMessage('question') }}
+          </span>
+        </div>
+
+        <!-- Options -->
+        <div class="form-group">
+          <label>Options * (Select correct answer below)</label>
+          <div formArrayName="options" class="options-array">
+            <div
+              *ngFor="let option of options.controls; let i = index"
+              class="option-item">
+              <div class="option-input-wrapper">
+                <input
+                  type="text"
+                  [formControlName]="i"
+                  class="form-control option-input"
+                  [class.invalid]="isOptionInvalid(i)"
+                  [placeholder]="'Option ' + (i + 1)">
+                <button
+                  type="button"
+                  class="correct-button"
+                  [class.selected]="questionForm.get('correct')?.value === i"
+                  (click)="questionForm.patchValue({ correct: i })">
+                  ✓ Correct
+                </button>
+              </div>
+              <span class="error-message" *ngIf="isOptionInvalid(i)">
+                Option {{ i + 1 }} is required
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button type="submit" class="submit-button">
+            {{ isEditing ? 'Update Question' : 'Add Question' }}
+          </button>
+          <button type="button" class="cancel-button" (click)="cancelForm()">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Questions List -->
+  <div class="questions-list" *ngIf="questions.length > 0; else noQuestions">
+    <div *ngFor="let question of questions; let i = index" class="question-card">
+      <div class="question-header">
+        <span class="question-number">Q{{ i + 1 }}</span>
+        <div class="question-actions">
+          <button class="edit-button" (click)="showEditForm(question)">
+            Edit
+          </button>
+          <button class="delete-button" (click)="deleteQuestion(question.id)">
+            Delete
+          </button>
+        </div>
+      </div>
+      
+      <div class="question-content">
+        <p class="question-text">{{ question.question }}</p>
+        
+        <div class="options-list">
+          <div
+            *ngFor="let option of question.options; let j = index"
+            class="option-display"
+            [class.correct-option]="j === question.correct">
+            <span class="option-label">{{ String.fromCharCode(65 + j) }}.</span>
+            <span class="option-text">{{ option }}</span>
+            <span class="correct-badge" *ngIf="j === question.correct">✓ Correct</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Questions Message -->
+  <ng-template #noQuestions>
+    <div class="no-questions">
+      <p>No questions available. Click "Add Question" to create your first question.</p>
+    </div>
+  </ng-template>
+</div>

@@ -1,0 +1,55 @@
+<div class="quiz-container">
+  <!-- Start Screen -->
+  <div *ngIf="!currentQuestion && !showResults" class="start-screen">
+    <div class="start-box">
+      <h1>Quiz Time!</h1>
+      <p class="quiz-info">This quiz contains {{ quizService.getTotalQuestions() }} multiple choice questions.</p>
+      <p class="quiz-info">Select the best answer for each question.</p>
+      <button class="start-button" (click)="loadQuestion()">Start Quiz</button>
+      <a routerLink="/dashboard" class="back-link">← Back to Dashboard</a>
+    </div>
+  </div>
+
+  <!-- Quiz Screen -->
+  <div *ngIf="currentQuestion && !showResults" class="quiz-screen">
+    <div class="quiz-header">
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="progress"></div>
+      </div>
+      <p class="question-counter">
+        Question {{ currentQuestionIndex + 1 }} of {{ quizService.getTotalQuestions() }}
+      </p>
+    </div>
+
+    <div class="quiz-content">
+      <h2 class="question-text">{{ currentQuestion.question }}</h2>
+      
+      <div class="options-container">
+        <button
+          *ngFor="let option of currentQuestion.options; let i = index"
+          type="button"
+          class="option"
+          [class.selected]="selectedAnswer === i"
+          (click)="selectOption(i)">
+          {{ option }}
+        </button>
+      </div>
+
+      <div class="quiz-actions">
+        <button
+          class="next-button"
+          [disabled]="selectedAnswer === null"
+          (click)="nextQuestion()">
+          Next
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Screen -->
+  <app-results
+    *ngIf="showResults"
+    [quizService]="quizService"
+    (restart)="restartQuiz()">
+  </app-results>
+</div>
